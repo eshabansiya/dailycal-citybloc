@@ -7,23 +7,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-/* ================= COLORS: change these to restyle the chart ================= */
 :root{
-  --bloc-a:#1d6fa5;          /* bloc A (Tregub, Bartlett, Ishii) */
-  --bloc-b:#e3792b;          /* bloc B (Kesarwani, Taplin, Blackaby, Humbert) */
-  --neither:#8c8c8c;         /* Lunaparra, O'Keefe */
-  --primary:#23517a;         /* main series: split votes, "alone", high agreement */
-  --secondary:#4ba3cc;       /* second series: contested, "with others" */
-  --text:#1d1d1d;            /* headline and labels */
-  --text-light:#707070;      /* subtitle, notes, footer */
+  --bloc-a:#1d6fa5;
+  --bloc-b:#e3792b;
+  --neither:#8c8c8c;
+  --primary:#23517a;
+  --secondary:#4ba3cc;
+  --text:#1d1d1d;
+  --text-light:#707070;
   --background:#ffffff;
   --gridline:#e6e6e6;
-  --vote-aye:#4ba3cc;        /* Aye */
-  --vote-no:#1d1d1d;         /* No */
-  --vote-abstain:#f0b429;    /* Abstain */
+  --vote-aye:#4ba3cc;
+  --vote-no:#1d1d1d;
+  --vote-abstain:#f0b429;
   --font:Roboto,"Helvetica Neue",Helvetica,Arial,sans-serif;
 }
-/* ============================================================================= */
 :root{--paper:var(--background);--panel:var(--background);--ink:var(--text);--ink-2:color-mix(in srgb,var(--text) 82%,var(--background));--muted:var(--text-light);
 --line:var(--gridline);--hair:color-mix(in srgb,var(--gridline) 60%,var(--background));--soft:color-mix(in srgb,var(--gridline) 70%,var(--background));
 --a:var(--bloc-a);--a-soft:color-mix(in srgb,var(--bloc-a) 14%,var(--background));--a-ink:color-mix(in srgb,var(--bloc-a) 80%,#000);
@@ -116,7 +114,6 @@ const getData = (name, rows) => {
 document.querySelectorAll("[data-range]").forEach(el => el.textContent = `${D.info.date_range[0]} to ${D.info.date_range[1]}`);
 const legend = items => { $("#legend").innerHTML = items.map(([style, label]) => `<span>${style ? `<i style="${style}"></i>` : ""}${label}</span>`).join(""); };
 const VOTE_LEGEND = [["background:var(--vote-aye)", "Aye"], ["background:var(--vote-no)", "No"], ["background:var(--vote-abstain)", "Abstain"], [null, `<b style="color:var(--text-light);margin-right:6px">abs</b>Absent`], [null, `<b style="color:var(--text-light);margin-right:6px">rec</b>Recused`], [null, `<b style="color:var(--text-light);margin-right:6px">–</b>No vote recorded`]];
-// When embedded in an iframe, tell the parent page how tall this graphic is so it can size the frame.
 if (parent !== window) new ResizeObserver(() => parent.postMessage({graphicHeight: Math.ceil(document.documentElement.getBoundingClientRect().height)}, "*")).observe(document.documentElement);
 const motions = () => D.motions.map((r, i) => { const c = (D.context || {})[i]; return {i, title: c ? cleanItem(c[1]) : cleanItem(r[0]), date: c ? c[0] : "", codes: r[2], topic: r[3], level: r[4], passed: !!r[5], a: r[7], b: r[8]}; });
 
@@ -129,7 +126,6 @@ const color = v => { const p = Math.round(6 + (v - lo) / (hi - lo) * 94); return
 legend([[null, `Voted alike: ${pct(lo)}<i style="width:140px;height:14px;margin:0 8px;background:linear-gradient(90deg,color-mix(in srgb,var(--primary) 6%,var(--background)),var(--primary))"></i>${pct(hi)}`],
         ["background:var(--a)", "Bloc A"], ["background:var(--b)", "Bloc B"], ["background:var(--u)", "Neither bloc"]]);
 
-// lower triangle with names on the diagonal
 $("#tri").innerHTML = ORDER.map((a, i) => `<tr>${ORDER.map((b, j) => {
   if (j > i) return `<td class="blank"></td>`;
   if (j === i) return `<td class="nm ${blocOf(a)}" data-m="${esc(a)}" title="Rank who ${esc(a)} votes with">${esc(a)}</td>`;
@@ -167,7 +163,6 @@ $("#tri").addEventListener("click", e => { const c = e.target.closest("td.cell")
 $("#panel").addEventListener("click", e => { const r = e.target.closest(".rank"); if (r) pair(r.dataset.a, r.dataset.b); });
 { let mn = 1, pr = []; ORDER.forEach((a, i) => ORDER.forEach((b, j) => { if (j < i && D.agreement_all[i][j] < mn) { mn = D.agreement_all[i][j]; pr = [a, b]; } }));
   $("#note").textContent = `Contested: at least one member voted No or Abstain (${D.info.n_contested} motions).` ; }
-// open on the closest pair
 let best = [0, 1, 0]; ORDER.forEach((a, i) => ORDER.forEach((b, j) => { if (j < i && D.agreement_contested[i][j] > best[2]) best = [i, j, D.agreement_contested[i][j]]; }));
 pair(ORDER[best[0]], ORDER[best[1]]);
 getData("council-agreement", [["member A", "member B", "contested votes both cast", "voted the same (contested)", "agreement (contested)", "agreement (all votes)"],
